@@ -22,6 +22,14 @@ class MemberAuthRouter extends AbstractRouter {
     this.router
       .route('/login')
       .post(this.authValidator.loginValidator(), this.memberController.login);
+
+    //forget password
+    this.router
+      .route('/forget-password')
+      .post(
+        this.commonValidator.commonForgetPassInputValidation(),
+        this.memberController.forgetPassword
+      );
   }
 }
 

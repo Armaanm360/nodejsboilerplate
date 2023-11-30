@@ -19,7 +19,7 @@ class AuthValidator {
         .isString()
         .isLength({ min: 8 })
         .withMessage('Password length min 8'),
-      body('mobileNumber')
+      body('mobileNumber', ResMsg.HTTP_UNPROCESSABLE_ENTITY)
         .isString()
         .isLength({ min: 14, max: 14 })
         .custom((value) => {

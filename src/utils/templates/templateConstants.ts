@@ -1,3 +1,3 @@
-export const projectLogo = 'https://www.member.toab.services/image/logo.png';
-export const projectName = 'Tour Operators Association of Bangladesh (TOAB)';
-export const projectURL = 'http://member.toab.services';
+export const projectLogo = 'https://www.weforumbd.org/asset/images/logo.png';
+export const projectName = 'Women & e-Commerce';
+export const projectURL = 'https://www.weforumbd.org/';

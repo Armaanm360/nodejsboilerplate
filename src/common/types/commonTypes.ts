@@ -17,8 +17,6 @@ export interface IAdmin {
 // user member types
 export interface IMember {
   id: number;
-  applicationId: number;
-  companyId: number;
   name: string;
   email: string;
   phone: string;

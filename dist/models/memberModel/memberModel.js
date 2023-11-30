@@ -27,7 +27,6 @@ class MemberModel extends schema_1.default {
             return member;
         });
     }
-    //check user
     // check user
     checkUser({ email, mobileNumber, }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,7 +43,6 @@ class MemberModel extends schema_1.default {
             return userMember;
         });
     }
-    //get check single user
     // get single user
     getSingleUser(email) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,6 +51,22 @@ class MemberModel extends schema_1.default {
                 .where({ email: email })
                 .select('*');
             return userMember;
+        });
+    }
+    // update user member
+    updateUserMember(payload, where) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db('userMember')
+                .withSchema(this.MEMBER_SCHEMA)
+                .update(payload)
+                .where((qb) => {
+                if (where.email) {
+                    qb.where({ email: where.email });
+                }
+                if (where.id) {
+                    qb.where({ id: where.id });
+                }
+            });
         });
     }
 }

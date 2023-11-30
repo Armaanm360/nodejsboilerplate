@@ -24,35 +24,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_controller_1 = __importDefault(require("../../abstract/abstract.controller"));
-const auth_member_service_1 = __importDefault(require("../services/auth.member.service"));
-class MemberAuthController extends abstract_controller_1.default {
+const common_service_1 = __importDefault(require("../commonService/common.service"));
+class commonController extends abstract_controller_1.default {
     constructor() {
         super();
-        this.memberAuthService = new auth_member_service_1.default();
-        this.registration = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            console.log('working..');
-            const _a = yield this.memberAuthService.registrationService(req), { code } = _a, data = __rest(_a, ["code"]);
-            res.status(code).json(data);
+        this.commonService = new common_service_1.default();
+        //send email otp
+        this.sendEmailOtpController = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _a = yield this.commonService.sendOtpToEmailService(req), { code } = _a, rest = __rest(_a, ["code"]);
+            res.status(code).json(rest);
         }));
-        // login
-        this.login = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = req.body;
-            const _b = yield this.memberAuthService.loginService({
-                email,
-                password,
-            }), { code } = _b, data = __rest(_b, ["code"]);
-            res.status(code).json(data);
-        }));
-        //forget password
-        this.forgetPassword = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { token, email, password } = req.body;
-            const _c = yield this.memberAuthService.forgetService({
-                token,
-                email,
-                password,
-            }), { code } = _c, data = __rest(_c, ["code"]);
+        // match email otp
+        this.matchEmailOtpController = this.asyncWrapper.wrap((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.commonService.matchEmailOtpService(req), { code } = _b, data = __rest(_b, ["code"]);
             res.status(code).json(data);
         }));
     }
 }
-exports.default = MemberAuthController;
+exports.default = commonController;

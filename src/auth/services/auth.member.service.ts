@@ -4,6 +4,7 @@ import Lib from '../../utils/lib/lib';
 import config from '../../config/config';
 import { ILogin } from '../../common/types/commonTypes';
 import { ILoginRes } from '../utils/types/admin.auth.types';
+import { OTP_TYPE_FORGET_MEMBER } from '../../utils/miscellaneous/constants';
 
 class MemberAuthService extends AbstractServices {
   //registration service
@@ -73,7 +74,6 @@ class MemberAuthService extends AbstractServices {
   }
 
   //login service
-  // login
   public async loginService({ email, password }: ILogin): Promise<ILoginRes> {
     const memberModel = this.Model.memberModel();
     const checkUser = await memberModel.getSingleUser(email);
@@ -122,6 +122,54 @@ class MemberAuthService extends AbstractServices {
       data: rest,
       token,
     };
+  }
+
+  //forget password
+  public async forgetService({
+    token,
+    email,
+    password,
+  }: {
+    token: string;
+    email: string;
+    password: string;
+  }) {
+    const tokenVerify: any = Lib.verifyToken(token, config.JWT_SECRET_MEMBER);
+
+    console.log({ tokenVerify });
+
+    //check if token verify or not
+    if (!tokenVerify) {
+      return {
+        success: false,
+        code: this.StatusCode.HTTP_UNAUTHORIZED,
+        message: this.ResMsg.HTTP_UNAUTHORIZED,
+      };
+    }
+
+    const { email: verifyEmail, type } = tokenVerify;
+
+    if (email === verifyEmail) {
+      const hashedPass = await Lib.hashPass(password);
+      const memberModel = this.Model.memberModel();
+
+      console.log(hashedPass);
+      await memberModel.updateUserMember(
+        { password: hashedPass },
+        { email: email }
+      );
+      return {
+        success: true,
+        code: this.StatusCode.HTTP_SUCCESSFUL,
+        message: this.ResMsg.PASSWORD_CHANGED,
+      };
+    } else {
+      return {
+        success: false,
+        code: this.StatusCode.HTTP_FORBIDDEN,
+        message: this.ResMsg.HTTP_FORBIDDEN,
+      };
+    }
   }
 }
 

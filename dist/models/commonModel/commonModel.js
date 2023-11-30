@@ -18,12 +18,45 @@ class CommonModel extends schema_1.default {
         super();
         this.db = db;
     }
-    // insert OTP
+    //test
     insertCustomer(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db('customers')
                 .withSchema(this.PUBLIC_SCHEMA)
                 .insert(payload);
+        });
+    }
+    //set otp
+    // insert OTP
+    insertOTP(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db('emailOtp')
+                .withSchema(this.DBO_SCHEMA)
+                .insert(payload);
+        });
+    }
+    // get otp
+    getOTP(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const check = yield this.db('emailOtp')
+                .withSchema(this.DBO_SCHEMA)
+                .select('id', 'hashedOtp', 'tried')
+                .andWhere('email', payload.email)
+                .andWhere('type', payload.type)
+                .andWhere('matched', 0)
+                .andWhere('tried', '<', 3)
+                .andWhereRaw(`"createdAt" + interval '3 minutes' > NOW()`);
+            return check;
+        });
+    }
+    //update otp
+    // update otp
+    updateOTP(payload, where) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db('emailOtp')
+                .withSchema(this.DBO_SCHEMA)
+                .update(payload)
+                .where(where);
         });
     }
 }

@@ -84,7 +84,6 @@ class MemberAuthService extends abstract_service_1.default {
         });
     }
     //login service
-    // login
     loginService({ email, password }) {
         return __awaiter(this, void 0, void 0, function* () {
             const memberModel = this.Model.memberModel();
@@ -127,6 +126,40 @@ class MemberAuthService extends abstract_service_1.default {
                 data: rest,
                 token,
             };
+        });
+    }
+    //forget password
+    forgetService({ token, email, password, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tokenVerify = lib_1.default.verifyToken(token, config_1.default.JWT_SECRET_MEMBER);
+            console.log({ tokenVerify });
+            //check if token verify or not
+            if (!tokenVerify) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_UNAUTHORIZED,
+                    message: this.ResMsg.HTTP_UNAUTHORIZED,
+                };
+            }
+            const { email: verifyEmail, type } = tokenVerify;
+            if (email === verifyEmail) {
+                const hashedPass = yield lib_1.default.hashPass(password);
+                const memberModel = this.Model.memberModel();
+                console.log(hashedPass);
+                yield memberModel.updateUserMember({ password: hashedPass }, { email: email });
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_SUCCESSFUL,
+                    message: this.ResMsg.PASSWORD_CHANGED,
+                };
+            }
+            else {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_FORBIDDEN,
+                    message: this.ResMsg.HTTP_FORBIDDEN,
+                };
+            }
         });
     }
 }

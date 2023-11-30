@@ -24,8 +24,6 @@ class MemberModel extends Schema {
     return member;
   }
 
-  //check user
-
   // check user
   public async checkUser({
     email,
@@ -48,7 +46,6 @@ class MemberModel extends Schema {
     return userMember;
   }
 
-  //get check single user
   // get single user
   public async getSingleUser(email: string): Promise<IGetUserMember[]> {
     const userMember = await this.db('userMember')
@@ -57,6 +54,24 @@ class MemberModel extends Schema {
       .select('*');
 
     return userMember;
+  }
+
+  // update user member
+  public async updateUserMember(
+    payload: IUpdateUserMemberPayload,
+    where: { email?: string; id?: number }
+  ) {
+    return await this.db('userMember')
+      .withSchema(this.MEMBER_SCHEMA)
+      .update(payload)
+      .where((qb) => {
+        if (where.email) {
+          qb.where({ email: where.email });
+        }
+        if (where.id) {
+          qb.where({ id: where.id });
+        }
+      });
   }
 }
 export default MemberModel;
